@@ -85,7 +85,7 @@ app.get("/api/products/color", async (req, res) => {
 app.get("/api/products/singleProduct", (req, res) => {
   const { id } = req.query;
   if (id.length < 24) res.json({});
-  Product.find({ _id: new ObjectId(id) })
+  Product.findOne({ _id: new ObjectId(id) })
     .then((data) => res.json(data))
     .catch((err) => {
       console.log(err);
