@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index"
-  },
+            "start": "node index",
+            "dev": "nodemon index"
+         },
   "author": "",
   "license": "ISC",
   "dependencies": {
