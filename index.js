@@ -2,17 +2,28 @@ const res = require("express/lib/response");
 const { express, Product, User, app, port, ObjectId, userAdder, productAdder } = require("./moduless");
 // Product APIs
 
-productAdder({ type: 'shirt', desc : 'this is desc and be aware of it', img: ['img1', 'img2'], title: 'title1', price: [1221, 65333] });
+// productAdder({ type: 'shirt', desc : 'this is desc and be aware of it', img: ['img1', 'img2'], title: 'title1', price: [1221, 65333] });
 
-app.get("/api/products", (req, res) => {
-  Product.find({})
-    .then((data) => res.status(200).json(data))
-    .catch((err) => res.status(404).json({}));
+app.get("/api/products", async (req, res) => {
+  try {
+    const data = await Product.find({});
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(404).json({});
+  }
 });
 
-app.get("/api/products/filter",
+app.post('/api/products/add', async (req, res) =>{
+    try {
+      const singleProduct = await Product.create(req.query);
+      res.status(200).json(singleProduct);
+    } catch (err) {
+      console.log(err);
+      res.status(404).json({});
+    }
+});
 
-async (req, res) => {
+app.get("/api/products/filter",async (req, res) => {
   const { filter } = req.query;
   Product.find({ type: filter.toLowerCase() })
     .then((data) => res.status(200).json(data))
@@ -142,7 +153,7 @@ app.post('/api/users/add', async (req, res) => {
         return false;
       });
       if(item) {return res.status(200).json(currUser);}
-      currUser.cart.push([id, size, '1']);
+      currUser.cart.push([id, size, 1]);
       await currUser.save();
     }
     else{
@@ -178,5 +189,37 @@ app.delete('/api/users/delete', async (req, res) => {
     res.status(404).json({});
   }
 });
+
+app.post('/api/users/update', async (req, res) => {
+  try {
+    const {id, ph, type, size} = req.query;
+    const singleUser = await User.findOne({phone: ph});
+    singleUser.cart = singleUser.cart.map(item => {
+      if(item[0] == id && item[1] == size){
+        item[2] += (type == 'inc' ? 1 : -1);
+      }
+      return item;
+    });
+    await singleUser.save();
+    res.status(200).json(singleUser);
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({});
+  }
+});
+
+app.get('/api/users/bag', async (req, res) => {
+  try {
+    const {ph, type} = req.query;
+
+    const singleUser = await User.findOne({phone: ph});
+    if(type == 'cart')return res.status(200).json(singleUser.cart);
+    else return res.status(200).json(singleUser.wishList);
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({});
+  }
+});
+
 
 app.listen(port, () => console.log(`Server is Up... Port : ${port}`));
