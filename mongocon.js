@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 // dataBase Connection
 mongoose
-  .connect("mongodb+srv://abhip:trwDq9IaYq30IJOk@cluster0.gybwhw7.mongodb.net/ecomm", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    "mongodb+srv://abhip:trwDq9IaYq30IJOk@cluster0.gybwhw7.mongodb.net/ecomm",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(err));
 
@@ -15,9 +18,25 @@ mongoose
 
 const userSchema = new mongoose.Schema({
   phone: String,
+  password: String,
   cart: [Array],
   wishList: [String],
+  email: String,
+  orders: [String],
+  name: String,
 });
+
+const orderSchema = new mongoose.Schema({
+  productId: String,
+  userId: String,
+  size: String,
+  qty: Number,
+  name: String,
+  postalCode: String,
+  city: String,
+  address: String,
+});
+
 // schema Product
 const productSchema = new mongoose.Schema({
   type: String,
@@ -36,6 +55,7 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema);
 const User = mongoose.model("User", userSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 const userAdder = async ({ phone, email, name }) => {
   const newUser = await User.create({
@@ -64,4 +84,4 @@ const productAdder = async ({ type, desc, img, title, price }) => {
   console.log(newProduct);
 };
 
-module.exports = { User, Product, mongoose, productAdder, userAdder};
+module.exports = { User, Product, mongoose, productAdder, userAdder, Order };
