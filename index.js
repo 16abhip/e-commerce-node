@@ -264,7 +264,7 @@ app.get("/api/users/login", async (req, res) => {
   try {
     const data = await User.findOne({ phone, password });
     if (!data) {
-      return res.status(401).json({});
+      return res.status(400).json({});
     }
     res.status(200).json(data);
   } catch (err) {
