@@ -224,7 +224,6 @@ app.post("/api/users/update", async (req, res) => {
   try {
     const { id, ph, type, size, price } = req.query;
     const singleUser = await User.findOne({ phone: ph });
-    const singleProduct = await Product.findOne({ _id: id });
     for (let i = 0; i < singleUser.cart.length; i++) {
       const item = singleUser.cart[i];
       if (item[0] == id && item[1] == size) {
@@ -239,6 +238,7 @@ app.post("/api/users/update", async (req, res) => {
     }
     singleUser.markModified("sum");
     singleUser.markModified("cart");
+    console.log(singleUser);
     await singleUser.save();
     res.status(200).json(singleUser);
   } catch (err) {
