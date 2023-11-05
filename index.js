@@ -222,16 +222,19 @@ app.delete("/api/users/delete", async (req, res) => {
 
 app.post("/api/users/update", async (req, res) => {
   try {
-    const { id, ph, type, size } = req.query;
+    const { id, ph, type, size, price } = req.query;
     const singleUser = await User.findOne({ phone: ph });
     const singleProduct = await Product.findOne({ _id: id });
     for (let i = 0; i < singleUser.cart.length; i++) {
       const item = singleUser.cart[i];
       if (item[0] == id && item[1] == size) {
-        item[2] += type == "inc" ? 1 : -1;
-        const priceChange =
-          type === "inc" ? singleProduct.price[1] : -singleProduct.price[1];
-        singleUser.sum += priceChange;
+        if (type == "inc") {
+          item[2] += 1;
+          singleUser.sum += Number(price);
+        } else {
+          item[2] -= 1;
+          singleUser.sum -= Number(price);
+        }
       }
     }
     singleUser.markModified("sum");
