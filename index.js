@@ -207,7 +207,7 @@ app.delete("/api/users/delete", async (req, res) => {
         if (item[0] != id && item[1] != size) {
           return true;
         }
-        currUser.sum -= price * item[2];
+        currUser.sum -= Number(price) * item[2];
         return false;
       });
     } else currUser.wishList = currUser.wishList.filter((item) => item != id);
