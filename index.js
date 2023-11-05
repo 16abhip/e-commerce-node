@@ -234,6 +234,8 @@ app.post("/api/users/update", async (req, res) => {
         singleUser.sum += priceChange;
       }
     }
+    singleUser.markModified("sum");
+    singleUser.markModified("cart");
     await singleUser.save();
     res.status(200).json(singleUser);
   } catch (err) {
