@@ -199,7 +199,7 @@ app.post("/api/users/add", async (req, res) => {
 
 app.delete("/api/users/delete", async (req, res) => {
   try {
-    const { id, ph, type, size } = req.query;
+    const { id, ph, type, size, price } = req.query;
     const currUser = await User.findOne({ phone: ph });
     if (!currUser) return res.status(404).json({});
     if (type === "cart") {
@@ -207,8 +207,7 @@ app.delete("/api/users/delete", async (req, res) => {
         if (item[0] != id && item[1] != size) {
           return true;
         }
-        const singleProduct = await Product.findOne({ _id: id });
-        currUser.sum -= singleProduct.price[1] * item[2];
+        currUser.sum -= price * item[2];
         return false;
       });
     } else currUser.wishList = currUser.wishList.filter((item) => item != id);
