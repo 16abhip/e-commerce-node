@@ -92,15 +92,15 @@ app.get("/api/products/color", async (req, res) => {
   }
 });
 
-app.get("/api/products/singleProduct", (req, res) => {
-  const { id } = req.query;
-  if (id.length < 24) res.json({});
-  Product.findOne({ _id: new ObjectId(id) })
-    .then((data) => res.json(data))
-    .catch((err) => {
-      console.log(err);
-      res.json({});
-    });
+app.get("/api/products/singleProduct", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const data = await Product.findOne({ _id: id });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({});
+  }
 });
 
 app.get("/api/products/size", async (req, res) => {
@@ -246,6 +246,26 @@ app.get("/api/users/bag", async (req, res) => {
   }
 });
 
+app.get("/api/users/getCartProduct", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const currUser = await User.findOne({ _id: id });
+    const data = await Promise.all(
+      currUser.cart.map(async (item) => {
+        const { _id, img, title, price } = await Product.findOne({
+          _id: item[0],
+        });
+        return { _id, img: img[0], title, price };
+      })
+    );
+    console.log(data);
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({});
+  }
+});
+
 app.get("/api/otp", async (req, res) => {
   try {
     let { ph } = req.query;
@@ -263,8 +283,8 @@ app.get("/api/users/login", async (req, res) => {
   const { phone, password } = req.query;
   try {
     const data = await User.findOne({ phone, password });
-    if (!data) {
-      return res.status(400).json({});
+    if (data === null) {
+      return res.status(401).json({});
     }
     res.status(200).json(data);
   } catch (err) {
