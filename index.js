@@ -266,6 +266,25 @@ app.get("/api/users/getCartProduct", async (req, res) => {
   }
 });
 
+app.get("/api/users/getWishlistProduct", async (req, res) => {
+  try {
+    const { id } = req.query;
+    const currUser = await User.findOne({ _id: id });
+    const data = await Promise.all(
+      currUser.wishList.map(async (item) => {
+        return await Product.findOne({
+          _id: item,
+        });
+      })
+    );
+    console.log(data);
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({});
+  }
+});
+
 app.get("/api/otp", async (req, res) => {
   try {
     let { ph } = req.query;
