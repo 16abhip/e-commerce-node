@@ -255,7 +255,7 @@ app.get("/api/users/getCartProduct", async (req, res) => {
         const { _id, img, title, price } = await Product.findOne({
           _id: item[0],
         });
-        return { _id, img: img[0], title, price };
+        return { _id, img: img[0], title, price, size: item[1], qty: item[2] };
       })
     );
     console.log(data);
