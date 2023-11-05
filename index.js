@@ -203,14 +203,27 @@ app.delete("/api/users/delete", async (req, res) => {
     const currUser = await User.findOne({ phone: ph });
     if (!currUser) return res.status(404).json({});
     if (type === "cart") {
-      currUser.cart = currUser.cart.filter(async (item) => {
-        if (item[0] != id && item[1] != size) {
-          return true;
+      let nums = [];
+      for (let i = 0; i < currUser.cart.length; i++) {
+        const item = currUser.cart[i];
+        if (item[0] == id && item[1] == size) {
+          currUser.sum -= Number(price) * item[2];
+        } else {
+          nums.push(item);
         }
-        currUser.sum -= Number(price) * item[2];
-        return false;
-      });
-    } else currUser.wishList = currUser.wishList.filter((item) => item != id);
+      }
+
+      currUser.cart = nums;
+    } else {
+      let nums = [];
+      for (let i = 0; i < currUser.wishList.length; i++) {
+        const item = currUser.wishList[i];
+        if (item != id) {
+          nums.push(id);
+        }
+      }
+      currUser.wishList = nums;
+    }
     await currUser.save();
     res.status(200).json(currUser);
   } catch (err) {
