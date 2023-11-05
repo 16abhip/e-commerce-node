@@ -229,10 +229,9 @@ app.post("/api/users/update", async (req, res) => {
       const item = singleUser.cart[i];
       if (item[0] == id && item[1] == size) {
         item[2] += type == "inc" ? 1 : -1;
-        singleUser.sum +=
-          type == "inc"
-            ? Number(singleProduct.price[1])
-            : -Number(singleProduct.price[1]);
+        const priceChange =
+          type === "inc" ? singleProduct.price[1] : -singleProduct.price[1];
+        singleUser.sum += priceChange;
       }
     }
     await singleUser.save();
