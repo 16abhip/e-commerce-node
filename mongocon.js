@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
   email: String,
   orders: [String],
   name: String,
+  sum: Number,
 });
 
 const orderSchema = new mongoose.Schema({
