@@ -140,6 +140,7 @@ app.post("/api/users/create", async (req, res) => {
       cart: [],
       wishList: [],
       orders: [],
+      sum: 0,
     });
     res.status(200).json(singleUser);
   } catch (err) {
@@ -165,7 +166,7 @@ app.post("/api/users/add", async (req, res) => {
     const currUser = await User.findOne({ phone: ph });
     console.log(currUser);
     if (!currUser) {
-      res.status(404).json({});
+      return res.status(404).json({});
     }
     if (type === "cart") {
       const item = currUser.cart.find((item) => {
@@ -178,6 +179,8 @@ app.post("/api/users/add", async (req, res) => {
         return res.status(200).json(currUser);
       }
       currUser.cart.push([id, size, 1]);
+      const singleProduct = await Product.findOne({ _id: id });
+      currUser.sum += singleProduct.price[1];
       await currUser.save();
     } else {
       const item1 = currUser.wishList.find((item) => item == id);
@@ -187,7 +190,7 @@ app.post("/api/users/add", async (req, res) => {
       currUser.wishList.push(id);
       await currUser.save();
     }
-    res.status(200).json(currUser);
+    return res.status(200).json(currUser);
   } catch (err) {
     console.log(err);
     res.status(404).json({});
@@ -199,14 +202,16 @@ app.delete("/api/users/delete", async (req, res) => {
     const { id, ph, type, size } = req.query;
     const currUser = await User.findOne({ phone: ph });
     if (!currUser) return res.status(404).json({});
-    if (type === "cart")
-      currUser.cart = currUser.cart.filter((item) => {
+    if (type === "cart") {
+      currUser.cart = currUser.cart.filter(async (item) => {
         if (item[0] != id && item[1] != size) {
           return true;
         }
+        const singleProduct = await Product.findOne({ _id: id });
+        currUser.sum -= singleProduct.price[1] * item[2];
         return false;
       });
-    else currUser.wishList = currUser.wishList.filter((item) => item != id);
+    } else currUser.wishList = currUser.wishList.filter((item) => item != id);
     await currUser.save();
     res.status(200).json(currUser);
   } catch (err) {
@@ -219,12 +224,16 @@ app.post("/api/users/update", async (req, res) => {
   try {
     const { id, ph, type, size } = req.query;
     const singleUser = await User.findOne({ phone: ph });
-    singleUser.cart = singleUser.cart.map((item) => {
+    singleUser.cart = singleUser.cart.map(async (item) => {
       if (item[0] == id && item[1] == size) {
         item[2] += type == "inc" ? 1 : -1;
       }
       return item;
     });
+    const singleProduct = await Product.findOne({ _id: id });
+
+    singleUser.sum +=
+      type == "inc" ? singleProduct.price[1] : -1 * singleProduct.price[1];
     await singleUser.save();
     res.status(200).json(singleUser);
   } catch (err) {
