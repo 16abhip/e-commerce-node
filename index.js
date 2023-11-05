@@ -7,6 +7,7 @@ const {
   port,
   ObjectId,
   Order,
+  mongoose,
 } = require("./moduless");
 const { query } = require("express");
 // Product APIs
@@ -164,7 +165,6 @@ app.post("/api/users/add", async (req, res) => {
   try {
     const { type, ph, id, size } = req.query;
     const currUser = await User.findOne({ phone: ph });
-    console.log(currUser);
     if (!currUser) {
       return res.status(404).json({});
     }
@@ -224,16 +224,17 @@ app.post("/api/users/update", async (req, res) => {
   try {
     const { id, ph, type, size } = req.query;
     const singleUser = await User.findOne({ phone: ph });
-    singleUser.cart = singleUser.cart.map(async (item) => {
+    const singleProduct = await Product.findOne({ _id: id });
+    for (let i = 0; i < singleUser.cart.length; i++) {
+      const item = singleUser.cart[i];
       if (item[0] == id && item[1] == size) {
         item[2] += type == "inc" ? 1 : -1;
+        singleUser.sum +=
+          type == "inc"
+            ? Number(singleProduct.price[1])
+            : -Number(singleProduct.price[1]);
       }
-      return item;
-    });
-    const singleProduct = await Product.findOne({ _id: id });
-
-    singleUser.sum +=
-      type == "inc" ? singleProduct.price[1] : -1 * singleProduct.price[1];
+    }
     await singleUser.save();
     res.status(200).json(singleUser);
   } catch (err) {
@@ -259,10 +260,13 @@ app.get("/api/users/getCartProduct", async (req, res) => {
   try {
     const { id } = req.query;
     const currUser = await User.findOne({ _id: id });
+    // console.log(currUser);
     const data = await Promise.all(
       currUser.cart.map(async (item) => {
+        console.log(item[0]);
+        const productId = new mongoose.Types.ObjectId(item[0]);
         const { _id, img, title, price } = await Product.findOne({
-          _id: item[0],
+          _id: productId,
         });
         return { _id, img: img[0], title, price, size: item[1], qty: item[2] };
       })
