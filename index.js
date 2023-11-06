@@ -380,22 +380,22 @@ app.post("/api/orders/add", async ({ body }, res) => {
   try {
     var { userId, products, name, postalCode, city, address } = body.params;
     let data = [];
-    // for (let i = 0; i < products.length; i++) {
-    //   const productId = products[i]._id;
-    //   const size = products[i].size;
-    //   const qty = products[i].qty;
-    //   const newOrder = await Order.create({
-    //     productId,
-    //     userId,
-    //     size,
-    //     qty,
-    //     name,
-    //     postalCode,
-    //     city,
-    //     address,
-    //   });
-    //   data.push(newOrder);
-    // }
+    for (let i = 0; i < products.length; i++) {
+      const productId = products[i]._id;
+      const size = products[i].size;
+      const qty = products[i].qty;
+      const newOrder = await Order.create({
+        productId,
+        userId,
+        size,
+        qty,
+        name,
+        postalCode,
+        city,
+        address,
+      });
+      data.push(newOrder);
+    }
     res.status(200).json(products);
   } catch (err) {
     console.log(err);
