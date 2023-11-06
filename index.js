@@ -376,9 +376,9 @@ app.get("/api/orders", async (req, res) => {
   }
 });
 
-app.post("/api/orders/add", async ({ query }, res) => {
+app.post("/api/orders/add", async ({ body }, res) => {
   try {
-    var { userId, products, name, postalCode, city, address } = query;
+    var { userId, products, name, postalCode, city, address } = body;
     products = JSON.parse(products);
     console.log(products);
     let data = [];
