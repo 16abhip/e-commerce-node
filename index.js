@@ -381,10 +381,12 @@ app.post("/api/orders/add", async ({ body }, res) => {
     var { userId, products, name, postalCode, city, address, phone } =
       body.params;
     let data = [];
+    const singleUser = await User.findOne({ _id: userId });
     for (let i = 0; i < products.length; i++) {
       const productId = products[i]._id;
       const size = products[i].size;
       const qty = products[i].qty;
+      const singleProduct = await Product.findOne({ _id: productId });
       const newOrder = await Order.create({
         productId,
         userId,
@@ -395,15 +397,15 @@ app.post("/api/orders/add", async ({ body }, res) => {
         city,
         address,
         phone,
+        price: Number(singleProduct.price[1]),
+        img: singleProduct.img[0],
+        title: singleProduct.title,
       });
       data.push(newOrder);
     }
-
-    const singleUser = await User.findOne({ _id: userId });
     singleUser.sum = 0;
     singleUser.cart = [];
     await singleUser.save();
-
     res.status(200).json(data);
   } catch (err) {
     console.log(err);
