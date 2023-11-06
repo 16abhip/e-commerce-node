@@ -378,8 +378,26 @@ app.get("/api/orders", async (req, res) => {
 
 app.post("/api/orders/add", async ({ query }, res) => {
   try {
-    const newOrder = await Order.create(query);
-    res.status(200).json(newOrder);
+    var { userId, products, name, postalCode, city, address } = query;
+    products = JSON.parse(products);
+    let data = [];
+    for (let i = 0; i < products.length; i++) {
+      const productId = products[i]._id;
+      const size = products[i].size;
+      const qty = products[i].qty;
+      const newOrder = await Order.create({
+        productId,
+        userId,
+        size,
+        qty,
+        name,
+        postalCode,
+        city,
+        address,
+      });
+      data.push(newOrder);
+    }
+    res.status(200).json(data);
   } catch (err) {
     console.log(err);
     res.status(404).json({});
