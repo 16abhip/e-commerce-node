@@ -378,7 +378,8 @@ app.get("/api/orders", async (req, res) => {
 
 app.post("/api/orders/add", async ({ body }, res) => {
   try {
-    var { userId, products, name, postalCode, city, address } = body.params;
+    var { userId, products, name, postalCode, city, address, phone } =
+      body.params;
     let data = [];
     for (let i = 0; i < products.length; i++) {
       const productId = products[i]._id;
@@ -393,6 +394,7 @@ app.post("/api/orders/add", async ({ body }, res) => {
         postalCode,
         city,
         address,
+        phone,
       });
       data.push(newOrder);
     }
