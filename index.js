@@ -399,7 +399,7 @@ app.post("/api/orders/add", async ({ body }, res) => {
       data.push(newOrder);
     }
 
-    const singleUser = await User.find({ _id: userId });
+    const singleUser = await User.findOne({ _id: userId });
     singleUser.sum = 0;
     singleUser.cart = [];
     await singleUser.save();
