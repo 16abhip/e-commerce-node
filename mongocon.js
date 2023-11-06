@@ -36,6 +36,7 @@ const orderSchema = new mongoose.Schema({
   postalCode: String,
   city: String,
   address: String,
+  phone: String,
 });
 
 // schema Product
