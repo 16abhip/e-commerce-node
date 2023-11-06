@@ -219,9 +219,10 @@ app.delete("/api/users/delete", async (req, res) => {
       for (let i = 0; i < currUser.wishList.length; i++) {
         const item = currUser.wishList[i];
         if (item != id) {
-          nums.push(id);
+          nums.push(item);
         }
       }
+      console.log(nums);
       currUser.wishList = nums;
     }
     await currUser.save();
