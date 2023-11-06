@@ -37,6 +37,10 @@ const orderSchema = new mongoose.Schema({
   city: String,
   address: String,
   phone: String,
+  date: { type: Date, default: Date.now },
+  price: Number,
+  img: String,
+  title: String,
 });
 
 // schema Product
