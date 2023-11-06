@@ -338,7 +338,7 @@ app.get("/api/users/login", async (req, res) => {
     return res.status(200).json(data);
   } catch (err) {
     console.log(err);
-    return res.status(200).json({});
+    res.status(200).json({});
   }
 });
 
@@ -378,10 +378,7 @@ app.get("/api/orders", async (req, res) => {
 
 app.post("/api/orders/add", async ({ body }, res) => {
   try {
-    // console.log(body.);
-    // var { userId, products, name, postalCode, city, address } = body;
-    // products = JSON.parse(products);
-    // console.log(products);
+    var { userId, products, name, postalCode, city, address } = body.params;
     let data = [];
     // for (let i = 0; i < products.length; i++) {
     //   const productId = products[i]._id;
@@ -399,7 +396,7 @@ app.post("/api/orders/add", async ({ body }, res) => {
     //   });
     //   data.push(newOrder);
     // }
-    res.status(200).json(body);
+    res.status(200).json(products);
   } catch (err) {
     console.log(err);
     res.status(404).json({});
