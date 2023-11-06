@@ -335,10 +335,10 @@ app.get("/api/users/login", async (req, res) => {
     if (data === null) {
       return res.status(401).json({});
     }
-    res.status(200).json(data);
+    return res.status(200).json(data);
   } catch (err) {
     console.log(err);
-    res.status(200).json({});
+    return res.status(200).json({});
   }
 });
 
