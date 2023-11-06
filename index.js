@@ -379,7 +379,7 @@ app.get("/api/orders", async (req, res) => {
 app.post("/api/orders/add", async ({ query }, res) => {
   try {
     var { userId, products, name, postalCode, city, address } = query;
-    //products = JSON.parse(products);
+    products = JSON.parse(products);
     console.log(products);
     let data = [];
     // for (let i = 0; i < products.length; i++) {
