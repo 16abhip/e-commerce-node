@@ -356,7 +356,7 @@ app.post("/api/users/forget", async ({ query }, res) => {
 
 app.get("/api/users/orders", async ({ query }, res) => {
   try {
-    const data = await Order.findOne(query);
+    const data = await Order.find(query);
     res.status(200).json(data);
   } catch (err) {
     console.log(err);
