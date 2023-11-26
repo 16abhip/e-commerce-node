@@ -124,6 +124,36 @@ app.get("/api/products/size", async (req, res) => {
   }
 });
 
+app.post("/api/products/addComment", async ({ body }, res) => {
+  try {
+    const { id, comm } = body;
+    const singleProduct = await Product.findOne({ _id: id });
+    singleProduct.comments.push(comm);
+    await singleProduct.save();
+    return res.status(200).json(singleProduct);
+    // console.log(body);
+    // res.json({});
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({});
+  }
+});
+
+app.post("/api/product/rating", async (req, res) => {
+  try {
+    const { id, num } = req.query;
+    const singleProduct = await Product.findOne({ _id: id });
+
+    singleProduct.star += parseInt(num);
+    singleProduct.count += 1;
+    await singleProduct.save();
+    return res.status(200).json(singleProduct);
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({});
+  }
+});
+
 // User APIs
 
 app.post("/api/users/create", async (req, res) => {
