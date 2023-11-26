@@ -57,6 +57,9 @@ const productSchema = new mongoose.Schema({
   title: String,
   img: [String],
   price: [Number],
+  comments: [String],
+  star: Number,
+  count: Number,
 });
 
 const Product = mongoose.model("Product", productSchema);
