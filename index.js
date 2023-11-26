@@ -124,22 +124,20 @@ app.get("/api/products/size", async (req, res) => {
   }
 });
 
-app.post("/api/products/addComment", async ({ body }, res) => {
+app.get("/api/products/addComment", async ({ body }, res) => {
   try {
     const { id, comm } = body.params;
     const singleProduct = await Product.findOne({ _id: id });
     singleProduct.comments.push(comm);
     await singleProduct.save();
     return res.status(200).json(singleProduct);
-    // console.log(body);
-    // res.json({});
   } catch (err) {
     console.log(err);
     res.status(200).json({});
   }
 });
 
-app.post("/api/product/rating", async (req, res) => {
+app.get("/api/product/rating", async (req, res) => {
   try {
     const { id, num } = req.query;
     const singleProduct = await Product.findOne({ _id: id });
