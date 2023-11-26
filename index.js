@@ -124,9 +124,9 @@ app.get("/api/products/size", async (req, res) => {
   }
 });
 
-app.get("/api/products/addComment", async ({ body }, res) => {
+app.get("/api/products/addComment", async ({ query }, res) => {
   try {
-    const { id, comm } = body.params;
+    const { id, comm } = query;
     const singleProduct = await Product.findOne({ _id: id });
     singleProduct.comments.push(comm);
     await singleProduct.save();
