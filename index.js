@@ -126,7 +126,7 @@ app.get("/api/products/size", async (req, res) => {
 
 app.post("/api/products/addComment", async ({ body }, res) => {
   try {
-    const { id, comm } = body;
+    const { id, comm } = body.params;
     const singleProduct = await Product.findOne({ _id: id });
     singleProduct.comments.push(comm);
     await singleProduct.save();
